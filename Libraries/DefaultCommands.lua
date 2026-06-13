@@ -36,11 +36,20 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 	WindowFunctions:AddCommand("theme", function(args)
 		if not args[1] then
 			PrintLine("Usage: theme <name>")
-			PrintLine("Available themes: " .. table.concat(WindowFunctions:GetThemes(), ", "))
+			PrintLine("Available themes:")
+			
+			local themes = WindowFunctions:GetThemes()
+			
+			for i = 1, #themes do
+				local theme = themes[i]
+				PrintLine("  - " .. theme)
+			end
+
 			return
 		end
 
 		local ok, err = WindowFunctions:SetTheme(args[1])
+
 		if not ok then
 			PrintLine("Error: " .. err)
 		else
