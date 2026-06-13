@@ -29,7 +29,12 @@ local function Init(WindowFunctions, PrintLine, State, Themes)
 	WindowFunctions:AddCommand("theme", function(args)
 		if not args[1] then
 			PrintLine("Current theme: " .. Themes.GetCurrent())
-			PrintLine("Available themes: " .. table.concat(Themes.GetAll(), ", "))
+			PrintLine("Available themes:")
+
+			for _, theme in next, Themes.GetAll() do
+				PrintLine("  - " .. theme)
+			end
+
 			return
 		end
 

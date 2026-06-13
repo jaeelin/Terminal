@@ -165,6 +165,8 @@ function Terminal:Window(Settings: {any}?)
 		NewPrompt()
 	end
 
+	WindowFunctions.Print = PrintLine
+
 	gui = BuildGui(
 		function() WindowFunctions:Unload() end,
 		function() end,

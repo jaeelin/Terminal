@@ -125,6 +125,8 @@ Themes.Definitions = {
 }
 
 function Themes.Register(Instance: Instance, Property: string, Key: string)
+	print("Registered:", Instance:GetFullName(), Property, Key)
+
 	table.insert(ThemedElements, {
 		instance = Instance,
 		property = Property,
@@ -147,9 +149,15 @@ function Themes.Set(Theme: string): (boolean, string?)
 	CurrentTheme = Theme
 
 	for _, entry in next, ThemedElements do
-		if entry.instance and entry.instance.Parent then
-			entry.instance[entry.property] = Themes.Definitions[Theme][entry.key]
-		end
+		print(
+			entry.instance:GetFullName(),
+			entry.property,
+			entry.key,
+			Themes.Definitions[Theme][entry.key]
+		)
+
+		entry.instance[entry.property] =
+			Themes.Definitions[Theme][entry.key]
 	end
 
 	for _, callback in next, ThemedCallbacks do
