@@ -124,18 +124,45 @@ Themes.Definitions = {
 	},
 }
 
-function Themes.Register(Instance: Instance, Property: string, Key: string)
-	assert(
-		Themes.Definitions[CurrentTheme][Key],
-		("Missing theme key: %s"):format(Key)
-	)
+local function Log(Message)
+	local File = "TerminalThemeLog.txt"
 
-	assert(
-		pcall(function()
-			return Instance[Property]
-		end),
-		("%s doesn't have property %s")
-			:format(Instance.ClassName, Property)
+	if appendfile then
+		appendfile(File, tostring(Message) .. "\n")
+	else
+		local Current = ""
+
+		if isfile and isfile(File) then
+			Current = readfile(File)
+		end
+
+		writefile(File, Current .. tostring(Message) .. "\n")
+	end
+end
+
+function Themes.Register(Instance: Instance, Property: string, Key: string)
+	if not Themes.Definitions[CurrentTheme][Key] then
+		Log(("Missing theme key: %s"):format(Key))
+		return
+	end
+
+	local Success = pcall(function()
+		return Instance[Property]
+	end)
+
+	if not Success then
+		Log(("%s doesn't have property %s")
+			:format(Instance.ClassName, Property))
+		return
+	end
+
+	Log(
+		("Registered %s.%s -> %s")
+		:format(
+			Instance:GetFullName(),
+			Property,
+			Key
+		)
 	)
 
 	table.insert(ThemedElements, {
@@ -160,6 +187,15 @@ function Themes.Set(Theme: string): (boolean, string?)
 	CurrentTheme = Theme
 
 	for _, entry in next, ThemedElements do
+		Log(
+			("Applying %s to %s.%s")
+			:format(
+				entry.key,
+				entry.instance:GetFullName(),
+				entry.property
+			)
+		)
+
 		entry.instance[entry.property] =
 			Themes.Definitions[Theme][entry.key]
 	end
