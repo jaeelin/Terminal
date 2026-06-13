@@ -31,29 +31,29 @@ function Input.Bind(Context: {})
 	local caps = false
 	local last_key = {}
 
-	Context.InputContext.Background.InputBegan:Connect(function(Input: Enum)
+	Context.Background.InputBegan:Connect(function(Input: Enum)
 		if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 
-		Context.InputContext.focused = true
-		Context.InputContext.Controls.Block()
+		Context.focused = true
+		Context.Controls.Block()
 	end)
 
 	UserInputService.InputBegan:Connect(function(Input: Enum)
 		if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 
-		if not Context.InputContext.focused then return end
+		if not Context.focused then return end
 
 		local mouse = UserInputService:GetMouseLocation()
-		local position  = Context.InputContext.Output.AbsolutePosition
-		local size = Context.InputContext.Output.AbsoluteSize
+		local position  = Context.Output.AbsolutePosition
+		local size = Context.Output.AbsoluteSize
 
 		local inside =
 			mouse.X >= position.X and mouse.X <= position.X + size.X and
 			mouse.Y >= position.Y and mouse.Y <= position.Y + size.Y
 
 		if not inside then
-			Context.InputContext.focused = false
-			Context.InputContext.Controls.Unblock()
+			Context.focused = false
+			Context.Controls.Unblock()
 		end
 	end)
 
@@ -64,37 +64,37 @@ function Input.Bind(Context: {})
 	end)
 
 	UserInputService.InputBegan:Connect(function(Input: Enum)
-		if not Context.InputContext.active_prompt or not Context.InputContext.focused or Context.InputContext.command_busy then return end
+		if not Context.active_prompt or not Context.focused or Context.command_busy then return end
 
 		local key = Input.KeyCode
 
 		if key == Enum.KeyCode.Return then
-			local raw = Context.InputContext.active_prompt.Text:sub(#Context.InputContext.directory + 3)
-			Context.InputContext.OnSubmit(raw)
+			local raw = Context.active_prompt.Text:sub(#Context.directory + 3)
+			Context.OnSubmit(raw)
 			return
 		end
 
 		if key == Enum.KeyCode.Backspace then
-			local raw = Context.InputContext.active_prompt.Text:sub(#Context.InputContext.directory + 3)
+			local raw = Context.active_prompt.Text:sub(#Context.directory + 3)
 			raw = raw:sub(1, #raw - 1)
-			Context.InputContext.active_prompt.Text = Context.InputContext.directory .. "> " .. raw
-			Context.InputContext.caret.Position = UDim2.new(0, Context.InputContext.active_prompt.TextBounds.X + 2, 0, 0)
+			Context.active_prompt.Text = Context.directory .. "> " .. raw
+			Context.caret.Position = UDim2.new(0, Context.active_prompt.TextBounds.X + 2, 0, 0)
 			return
 		end
 
 		if key == Enum.KeyCode.Up then
-			Context.InputContext.history_index = math.clamp(Context.InputContext.history_index - 1, 1, #Context.InputContext.history)
-			local cmd = Context.InputContext.history[Context.InputContext.history_index] or ""
-			Context.InputContext.active_prompt.Text = Context.InputContext.directory .. "> " .. cmd
-			Context.InputContext.caret.Position = UDim2.new(0, Context.InputContext.active_prompt.TextBounds.X + 2, 0, 0)
+			Context.history_index = math.clamp(Context.history_index - 1, 1, #Context.history)
+			local cmd = Context.history[Context.history_index] or ""
+			Context.active_prompt.Text = Context.directory .. "> " .. cmd
+			Context.caret.Position = UDim2.new(0, Context.active_prompt.TextBounds.X + 2, 0, 0)
 			return
 		end
 
 		if key == Enum.KeyCode.Down then
-			Context.InputContext.history_index = math.clamp(Context.InputContext.history_index + 1, 1, #Context.InputContext.history)
-			local cmd = Context.InputContext.history[Context.InputContext.history_index] or ""
-			Context.InputContext.active_prompt.Text = Context.InputContext.directory .. "> " .. cmd
-			Context.InputContext.caret.Position = UDim2.new(0, Context.InputContext.active_prompt.TextBounds.X + 2, 0, 0)
+			Context.history_index = math.clamp(Context.history_index + 1, 1, #Context.history)
+			local cmd = Context.history[Context.history_index] or ""
+			Context.active_prompt.Text = Context.directory .. "> " .. cmd
+			Context.caret.Position = UDim2.new(0, Context.active_prompt.TextBounds.X + 2, 0, 0)
 			return
 		end
 
@@ -124,11 +124,11 @@ function Input.Bind(Context: {})
 			end
 		end
 
-		Context.InputContext.active_prompt.Text ..= character
+		Context.active_prompt.Text ..= character
 
 		task.defer(function()
-			if Context.InputContext.caret then
-				Context.InputContext.caret.Position = UDim2.new(0, Context.InputContext.active_prompt.TextBounds.X + 10, 0, 0)
+			if Context.caret then
+				Context.caret.Position = UDim2.new(0, Context.active_prompt.TextBounds.X + 10, 0, 0)
 			end
 		end)
 	end)
