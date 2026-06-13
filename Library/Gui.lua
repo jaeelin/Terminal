@@ -166,7 +166,7 @@ local function Build(OnClose: () -> (), OnMinimize: () -> (), OnMaximize : () ->
 
 	AddHover(Close, OnClose)
 	AddHover(Minimize, OnMinimize)
-	AddHover(Maximize, onMaximize)
+	AddHover(Maximize, OnMaximize)
 
 	return {
 		terminal = terminal,

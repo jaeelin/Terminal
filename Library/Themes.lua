@@ -125,14 +125,25 @@ Themes.Definitions = {
 }
 
 function Themes.Register(Instance: Instance, Property: string, Key: string)
-	print("Registered:", Instance:GetFullName(), Property, Key)
+	assert(
+		Themes.Definitions[CurrentTheme][Key],
+		("Missing theme key: %s"):format(Key)
+	)
+
+	assert(
+		pcall(function()
+			return Instance[Property]
+		end),
+		("%s doesn't have property %s")
+			:format(Instance.ClassName, Property)
+	)
 
 	table.insert(ThemedElements, {
 		instance = Instance,
 		property = Property,
 		key = Key,
 	})
-	
+
 	Instance[Property] = Themes.Definitions[CurrentTheme][Key]
 end
 
@@ -149,13 +160,6 @@ function Themes.Set(Theme: string): (boolean, string?)
 	CurrentTheme = Theme
 
 	for _, entry in next, ThemedElements do
-		print(
-			entry.instance:GetFullName(),
-			entry.property,
-			entry.key,
-			Themes.Definitions[Theme][entry.key]
-		)
-
 		entry.instance[entry.property] =
 			Themes.Definitions[Theme][entry.key]
 	end
