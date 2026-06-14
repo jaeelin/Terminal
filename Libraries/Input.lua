@@ -70,7 +70,7 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 		if not Context.can_drag then return end
 
 		if dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
-			if Context then
+			if Context.maximized then
 				local mouse = Input.Position
 
 				local relativeX = (mouse.X - Context.Background.AbsolutePosition.X) / Context.Background.AbsoluteSize.X
