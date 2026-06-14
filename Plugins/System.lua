@@ -2,7 +2,9 @@ local Players = cloneref and cloneref(game:GetService("Players")) or game:GetSer
 
 local LocalPlayer = Players.LocalPlayer
 
-return function(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
+local System = {}
+
+function System.Register(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
 	local System = PluginContext.System
 
 	WindowFunctions:AddCommand("whoami", function()
@@ -22,11 +24,11 @@ return function(WindowFunctions: {}, PrintLine: () -> (), Directory: string, Plu
 	end, "Displays the search path.")
 
 	WindowFunctions:AddCommand("date", function()
-        PrintLine(string.format("The current date is: %s", os.date("%a %m/%d/%Y")))
+		PrintLine(string.format("The current date is: %s", os.date("%a %m/%d/%Y")))
 	end, "Displays the current date.")
 
 	WindowFunctions:AddCommand("time", function()
-        PrintLine(string.format("The current time is: %s.%02d", os.date("%H:%M:%S"), math.floor((tick() % 1) * 100)))
+		PrintLine(string.format("The current time is: %s.%02d", os.date("%H:%M:%S"), math.floor((tick() % 1) * 100)))
 	end, "Displays the current system time.")
 
 	WindowFunctions:AddCommand("systeminfo", function()
@@ -59,3 +61,5 @@ return function(WindowFunctions: {}, PrintLine: () -> (), Directory: string, Plu
 		WindowFunctions:Unload()
 	end, "Closes the terminal.")
 end
+
+return System

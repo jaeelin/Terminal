@@ -1,16 +1,10 @@
-print("hello")
-
 local Players = cloneref and cloneref(game:GetService("Players")) or game:GetService("Players")
-
-print("hello2")
 
 local LocalPlayer = Players.LocalPlayer
 
-print("hello3")
+local VariableController = {}
 
-return function(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
-	print("PluginContext:", PluginContext)
-
+function VariableController.Register(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
 	PluginContext.System = {
 		Username = LocalPlayer.Name,
 		Hostname = "DESKTOP-4K8P7A2",
@@ -23,3 +17,5 @@ return function(WindowFunctions: {}, PrintLine: () -> (), Directory: string, Plu
 		BootTime = os.time(),
 	}
 end
+
+return VariableController
