@@ -3,6 +3,8 @@ local Players = cloneref and cloneref(game:GetService("Players")) or game:GetSer
 local LocalPlayer = Players.LocalPlayer
 
 return function(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
+    print("PluginContext:", PluginContext)
+
     PluginContext.System = {
         Username = LocalPlayer.Name,
         Hostname = "DESKTOP-4K8P7A2",
