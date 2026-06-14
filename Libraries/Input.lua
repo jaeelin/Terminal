@@ -72,7 +72,7 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 		if not Context.can_drag or not dragging or not target_position then return end
 		
 		if Context.maximized then
-			WindowFunctions:Maximize()
+			WindowFunctions:Maximize(target_position)
 		end
 		
 		Context.Background.Position = Context.Background.Position:Lerp(target_position, 0.35)
