@@ -28,16 +28,19 @@ local Punctuation = {
 	[Enum.KeyCode.Equals] = "=",
 }
 
-function Input.Bind(Context: {})
+function Input.Bind(WindowFunctions: {}, Context: {})
 	local caps = false
 	local last_key = {}
 	
 	local dragging = false
+
 	local drag_start = nil
 	local start_position = nil
 	local target_position = nil
 
 	Context.Top.InputBegan:Connect(function(Input: Enum)
+		if not Context.can_drag then return end
+
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			dragging = true
 			drag_start = Input.Position
@@ -52,6 +55,8 @@ function Input.Bind(Context: {})
 	end)
 
 	UserInputService.InputChanged:Connect(function(Input: Enum)
+		if not Context.can_drag then return end
+
 		if dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
 			local delta = Input.Position - drag_start
 			target_position = UDim2.new(
@@ -64,7 +69,11 @@ function Input.Bind(Context: {})
 	end)
 
 	RunService.RenderStepped:Connect(function()
-		if not dragging or not target_position then return end
+		if not Context.can_drag or not dragging or not target_position then return end
+		
+		if Context.maximized then
+			WindowFunctions:Maximize()
+		end
 		
 		Context.Background.Position = Context.Background.Position:Lerp(target_position, 0.35)
 	end)

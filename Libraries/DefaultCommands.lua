@@ -65,7 +65,7 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 		end
 	end, "List all available themes.")
 
-	WindowFunctions:AddCommand("version", function()
+	WindowFunctions:AddCommand("ver", function()
 		PrintLine("Terminal Version: " .. (WindowFunctions.Version or "unknown"))
 	end, "Display the terminal version.")
 
