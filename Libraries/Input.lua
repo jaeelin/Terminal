@@ -37,14 +37,26 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 	local drag_start = nil
 	local start_position = nil
 	local target_position = nil
+	
+	local last_click = 0
 
 	Context.Top.InputBegan:Connect(function(Input: Enum)
 		if not Context.can_drag then return end
-
+		
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local now = tick()
+
+			if now - last_click <= 0.25 then
+				WindowFunctions:Maximize()
+				last_click = 0
+				return
+			end
+
+			last_click = now
+
 			dragging = true
 			drag_start = Input.Position
-			start_position = Context.Background.Position
+			start_position = Background.Position
 		end
 	end)
 
@@ -58,6 +70,27 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 		if not Context.can_drag then return end
 
 		if dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
+			if Context then
+				local mouse = Input.Position
+
+				local relativeX = (mouse.X - Context.Background.AbsolutePosition.X) / Context.Background.AbsoluteSize.X
+
+				local relativeY = (mouse.Y - Context.Background.AbsolutePosition.Y) / Context.Background.AbsoluteSize.Y
+
+				Context.Background.Size = UDim2.new(0.4, 0, 0.55, 0)
+
+				local new_size = Context.Background.AbsoluteSize
+
+				start_position = UDim2.fromOffset(
+					mouse.X - new_size.X * relativeX + new_size.X * 0.5,
+					mouse.Y - new_size.Y * relativeY + new_size.Y * 0.5
+				)
+
+				drag_start = mouse
+
+				Context.maximized = false
+			end
+			
 			local delta = Input.Position - drag_start
 			target_position = UDim2.new(
 				start_position.X.Scale,
