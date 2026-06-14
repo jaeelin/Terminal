@@ -71,19 +71,6 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 	RunService.RenderStepped:Connect(function()
 		if not Context.can_drag or not dragging or not target_position then return end
 		
-		if Context.maximized then
-			Context.maximized = false
-
-			Context.Background.Size = UDim2.new(0.4, 0, 0.55, 0)
-
-			local mouse = UserInputService:GetMouseLocation()
-
-			target_position = UDim2.fromOffset(
-				mouse.X - Context.Background.AbsoluteSize.X * 0.5,
-				mouse.Y - 20
-			)
-		end
-		
 		Context.Background.Position = Context.Background.Position:Lerp(target_position, 0.35)
 	end)
 
