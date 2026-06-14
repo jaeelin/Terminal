@@ -3,8 +3,14 @@ local DefaultCommands = {}
 function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Directory: string)
 	WindowFunctions:AddCommand("help", function()
 		PrintLine("Available commands:")
-		for name, data in next, WindowFunctions.Commands do
-			PrintLine("  " .. name .. " - " .. data.description)
+		
+		for i = 1, #WindowFunctions.CommandOrder do
+			local name = WindowFunctions.CommandOrder[i]
+			local data = WindowFunctions.Commands[name]
+
+			if data then
+				PrintLine("  " .. name .. " - " .. data.description)
+			end
 		end
 	end, "Display the supported commands.")
 
@@ -59,7 +65,7 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 		end
 	end, "List all available themes.")
 
-	WindowFunctions:AddCommand("ver", function()
+	WindowFunctions:AddCommand("version", function()
 		PrintLine("Terminal Version: " .. (WindowFunctions.Version or "unknown"))
 	end, "Display the terminal version.")
 

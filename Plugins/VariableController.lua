@@ -1,8 +1,8 @@
+local VariableController = {}
+
 local Players = cloneref and cloneref(game:GetService("Players")) or game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
-
-local VariableController = {}
 
 function VariableController.Register(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
 	PluginContext.System = {

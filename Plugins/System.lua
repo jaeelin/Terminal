@@ -1,8 +1,8 @@
+local System = {}
+
 local Players = cloneref and cloneref(game:GetService("Players")) or game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
-
-local System = {}
 
 function System.Register(WindowFunctions: {}, PrintLine: () -> (), Directory: string, PluginContext: {})
 	local System = PluginContext.System
