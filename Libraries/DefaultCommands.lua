@@ -6,9 +6,9 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 		for name, data in next, WindowFunctions.Commands do
 			PrintLine("  " .. name .. " - " .. data.description)
 		end
-	end, "No Description.")
+	end, "Display the supported commands.")
 
-	WindowFunctions:AddCommand("clear", function()
+	WindowFunctions:AddCommand("cls", function()
 		local output = WindowFunctions.Output
 		if not output then return end
 
@@ -21,17 +21,17 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 				child:Destroy()
 			end
 		end
-	end, "No Description")
+	end, "Clear the contents of the terminal.")
 
 	WindowFunctions:AddCommand("echo", function(args)
 		PrintLine(table.concat(args, " "))
-	end, "No Description")
+	end, "Repeat the given text.")
 
 	WindowFunctions:AddCommand("cd", function(args)
 		if args[1] then
 			Directory = args[1]
 		end
-	end, "No Description")
+	end, "Change the current directory.")
 
 	WindowFunctions:AddCommand("theme", function(args)
 		if not args[1] then
@@ -46,7 +46,7 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 		else
 			PrintLine("Theme set to '" .. args[1] .. "'.")
 		end
-	end, "No Description")
+	end, "Set the terminal theme.")
 
 	WindowFunctions:AddCommand("themes", function()
 		PrintLine("Available themes: ")
@@ -57,11 +57,11 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Dire
 			local theme = themes[i]
 			PrintLine("  - " .. theme)
 		end
-	end, "No Description")
+	end, "List all available themes.")
 
-	WindowFunctions:AddCommand("version", function()
+	WindowFunctions:AddCommand("ver", function()
 		PrintLine("Terminal Version: " .. (WindowFunctions.Version or "unknown"))
-	end, "No Description")
+	end, "Display the terminal version.")
 
 end
 
