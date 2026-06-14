@@ -31,18 +31,18 @@ local Punctuation = {
 function Input.Bind(WindowFunctions: {}, Context: {})
 	local caps = false
 	local last_key = {}
-	
+
 	local dragging = false
 
 	local drag_start = nil
 	local start_position = nil
 	local target_position = nil
-	
+
 	local last_click = 0
 
 	Context.Top.InputBegan:Connect(function(Input: Enum)
 		if not Context.can_drag then return end
-		
+
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			local now = tick()
 
@@ -90,7 +90,7 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 
 				Context.maximized = false
 			end
-			
+
 			local delta = Input.Position - drag_start
 			target_position = UDim2.new(
 				start_position.X.Scale,
@@ -103,7 +103,7 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 
 	RunService.RenderStepped:Connect(function()
 		if not Context.can_drag or not dragging or not target_position then return end
-		
+
 		Context.Background.Position = Context.Background.Position:Lerp(target_position, 0.35)
 	end)
 
@@ -140,6 +140,8 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 	end)
 
 	UserInputService.InputBegan:Connect(function(Input: Enum)
+		if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or UserInputService:IsKeyDown(Enum.KeyCode.RightControl) then return end
+
 		if not Context.active_prompt or not Context.focused or Context.command_busy then return end
 
 		local key = Input.KeyCode
@@ -208,10 +210,9 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 			end
 		end)
 	end)
-	
-	UserInputService.InputBegan:Connect(function(input, gameProcessed)
-		if gameProcessed then return end
-		if input.KeyCode == Enum.KeyCode.V and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+
+	UserInputService.InputBegan:Connect(function(Input: Enum)
+		if Input.KeyCode == Enum.KeyCode.V and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
 			local prompt = Context.active_prompt
 			if not prompt then return end
 
@@ -219,24 +220,14 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 			Context.InputBox:CaptureFocus()
 
 			task.wait()
-			
+
 			local pasted = Context.InputBox.Text
 			Context.InputBox:ReleaseFocus()
 
 			if pasted == "" then return end
 
-			local lines = pasted:split("\n")
+			prompt.Text = prompt.Text .. pasted
 
-			for i = 1, #lines - 1 do
-				if lines[i] ~= "" then
-					prompt.Text = prompt.Text .. lines[i]
-					Context.OnSubmit(prompt.Text:gsub(".*> ", ""))
-					prompt = Context.active_prompt
-				end
-			end
-
-			prompt.Text = prompt.Text .. lines[#lines]
-			
 			if Context.caret then
 				Context.caret.Position = UDim2.new(0, prompt.TextBounds.X + 2, 0, 0)
 			end
