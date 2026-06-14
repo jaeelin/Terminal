@@ -225,8 +225,18 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 
 			if pasted == "" then return end
 
-			prompt.Text = prompt.Text .. pasted
+			local lines = pasted:split("\n")
 
+			for i = 1, #lines - 1 do
+				if lines[i] ~= "" then
+					prompt.Text = prompt.Text .. lines[i]
+					Context.OnSubmit(prompt.Text:gsub(".*> ", ""))
+					prompt = Context.active_prompt
+				end
+			end
+
+			prompt.Text = prompt.Text .. lines[#lines]
+			
 			if Context.caret then
 				Context.caret.Position = UDim2.new(0, prompt.TextBounds.X + 2, 0, 0)
 			end
