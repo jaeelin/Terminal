@@ -1,6 +1,7 @@
 local Input = {}
 
 local UserInputService = cloneref and cloneref(game:GetService("UserInputService")) or game:GetService("UserInputService")
+local RunService = cloneref and cloneref(game:GetService("RunService")) or game:GetService("RunService")
 
 local Shifted = {
 	[";"] = ":",
@@ -30,6 +31,43 @@ local Punctuation = {
 function Input.Bind(Context: {})
 	local caps = false
 	local last_key = {}
+	
+	local dragging = false
+	local drag_start = nil
+	local start_position = nil
+	local target_position = nil
+
+	Context.Top.InputBegan:Connect(function(Input: Enum)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			drag_start = Input.Position
+			start_position = Context.Background.Position
+		end
+	end)
+
+	Context.Top.InputEnded:Connect(function(Input: Enum)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(Input: Enum)
+		if dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = Input.Position - drag_start
+			target_position = UDim2.new(
+				start_position.X.Scale,
+				start_position.X.Offset + delta.X,
+				start_position.Y.Scale,
+				start_position.Y.Offset + delta.Y
+			)
+		end
+	end)
+
+	RunService.RenderStepped:Connect(function()
+		if not dragging or not target_position then return end
+		
+		Context.Background.Position = Context.Background.Position:Lerp(target_position, 0.35)
+	end)
 
 	Context.Background.InputBegan:Connect(function(Input: Enum)
 		if Input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
