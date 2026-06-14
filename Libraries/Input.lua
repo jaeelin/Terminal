@@ -56,7 +56,7 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 
 			dragging = true
 			drag_start = Input.Position
-			start_position = Background.Position
+			start_position = Context.Background.Position
 		end
 	end)
 
