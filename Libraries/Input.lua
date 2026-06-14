@@ -208,6 +208,30 @@ function Input.Bind(WindowFunctions: {}, Context: {})
 			end
 		end)
 	end)
+	
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if gameProcessed then return end
+		if input.KeyCode == Enum.KeyCode.V and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+			local prompt = Context.active_prompt
+			if not prompt then return end
+
+			Context.InputBox.Text = ""
+			Context.InputBox:CaptureFocus()
+
+			task.wait()
+			
+			local pasted = Context.InputBox.Text
+			Context.InputBox:ReleaseFocus()
+
+			if pasted == "" then return end
+
+			prompt.Text = prompt.Text .. pasted
+
+			if Context.caret then
+				Context.caret.Position = UDim2.new(0, prompt.TextBounds.X + 2, 0, 0)
+			end
+		end
+	end)
 end
 
 return Input

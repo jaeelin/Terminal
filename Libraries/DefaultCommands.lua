@@ -29,34 +29,34 @@ function DefaultCommands.Register(WindowFunctions: {}, PrintLine: () -> (), Inpu
 		end
 	end, "Clear the contents of the terminal.")
 
-	WindowFunctions:AddCommand("echo", function(arguments)
-		PrintLine(table.concat(arguments, " "))
+	WindowFunctions:AddCommand("echo", function(Arguments: {string})
+		PrintLine(table.concat(Arguments, " "))
 	end, "Repeat the given text.")
 	
-	WindowFunctions:AddCommand("title", function(arguments)
-		if arguments[1] then
-			WindowFunctions.Title.Text = arguments[1]
+	WindowFunctions:AddCommand("title", function(Arguments: {string})
+		if Arguments[1] then
+			WindowFunctions.Title.Text = Arguments[1]
 		end
 	end, "Change the terminal title.")
 
-	WindowFunctions:AddCommand("cd", function(arguments)
-		if arguments[1] then
-			InputContext.directory = arguments[1]
+	WindowFunctions:AddCommand("cd", function(Arguments: {string})
+		if Arguments[1] then
+			InputContext.directory = Arguments[1]
 		end
 	end, "Change the current directory.")
 
-	WindowFunctions:AddCommand("theme", function(arguments)
-		if not arguments[1] then
+	WindowFunctions:AddCommand("theme", function(Arguments: {string})
+		if not Arguments[1] then
 			PrintLine("Usage: theme <name>")
 			return
 		end
 
-		local ok, err = WindowFunctions:SetTheme(arguments[1])
+		local ok, err = WindowFunctions:SetTheme(Arguments[1])
 
 		if not ok then
 			PrintLine("Error: " .. err)
 		else
-			PrintLine("Theme set to '" .. arguments[1] .. "'.")
+			PrintLine("Theme set to '" .. Arguments[1] .. "'.")
 		end
 	end, "Set the terminal theme.")
 
